@@ -1,4 +1,7 @@
-# Python cache
+secrets.json
 __pycache__/
+*.pyc
+.venv/
+venv/
 *.py[cod]
 *$py.class
