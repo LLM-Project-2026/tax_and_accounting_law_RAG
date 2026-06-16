@@ -2,7 +2,7 @@
 
 Стъпки 1–2 от пайплайна на RAG асистента: **сваляне** и
 **трансформация** на нормативната уредба в структурирани чънкове,
-плюс отчети за L3 (токенизация) и L6 (качество).
+плюс отчет за L6 (качество на данните).
 
 ## Какво произвежда този слой
 
@@ -50,8 +50,7 @@ lex.bg HTML ──▶ data/raw/<CODE>__<YYYYMMDD>.html
                          ▼
                 data/parsed/chunks.jsonl
                          │
-                         ├─▶ ingest.quality    → reports/quality.json + L6 отчет
-                         └─▶ analysis.tokenizers → reports/tokenizers.json + L3 отчет
+                         └─▶ ingest.quality → reports/quality.json + L6 отчет
 ```
 
 ## Структура на репото
@@ -59,22 +58,19 @@ lex.bg HTML ──▶ data/raw/<CODE>__<YYYYMMDD>.html
 ```
 RAG_Legal/stage_1/
 ├── requirements.txt
+├── run_pipeline.py        ← пуска целия pipeline с една команда
 ├── ingest/
 │   ├── laws.py            ← регистър на 5-те закона
 │   ├── download.py        ← scraper (lex.bg рейт-лимитва, тества)
-│   ├── import_local.py    ← внасяне на ръчно запазен HTML (когато scraper-ът е блокиран)
+│   ├── import_local.py    ← внасяне на ръчно запазен HTML
 │   ├── parse.py           ← HTML → article/paragraph chunks
 │   └── quality.py         ← L6 — критерии за качество
-├── analysis/
-│   └── tokenizers.py      ← L3 — tiktoken vs XLM-R сравнение
 ├── data/
 │   ├── raw/               ← суров HTML + manifest.json
 │   └── parsed/chunks.jsonl
 └── reports/
-    ├── L3_tokenizers.md
     ├── L6_quality.md
-    ├── quality.json
-    └── tokenizers.json
+    └── quality.json
 ```
 
 ## Как се пуска
@@ -83,17 +79,13 @@ RAG_Legal/stage_1/
 # 1. Зависимости
 py -3 -m pip install -r requirements.txt
 
-# 2. Алтернатива: запазване страниците от Chrome (Save complete page)
+# 2. Целия pipeline с една команда
+py -3 run_pipeline.py
+
+# или поотделно:
 py -3 -m ingest.import_local
-
-# 3. Парсване
 py -3 -m ingest.parse
-
-# 4. Качество (L6)
 py -3 -m ingest.quality
-
-# 5. Токенизация (L3)
-py -3 -m analysis.tokenizers
 ```
 
 ## Интерфейс за Stage 2

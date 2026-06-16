@@ -1,0 +1,217 @@
+{
+  "totals": {
+    "chunks": 5897,
+    "laws": 5,
+    "unique_articles": 1388,
+    "empty_chunks_under_30ch": 129,
+    "duplicate_text_groups": 145,
+    "duplicate_chunks_total": 678,
+    "repealed_chunks": 118,
+    "no_part_metadata": 280,
+    "no_chapter_metadata": 216,
+    "articles_kept_as_single_chunk": 462,
+    "articles_split_into_paragraphs": 926,
+    "char_quartiles": {
+      "min": 27,
+      "p25": 153,
+      "median": 273,
+      "p75": 452,
+      "p95": 1035,
+      "max": 8380,
+      "mean": 382.6
+    }
+  },
+  "per_law": {
+    "KSO": {
+      "short": "КСО",
+      "title": "Кодекс за социално осигуряване",
+      "chunks": 2469,
+      "unique_articles": 554,
+      "repealed_chunks": 40,
+      "empty_chunks": 125,
+      "long_chunks_ge2000": 28,
+      "char_quartiles": {
+        "min": 27,
+        "p25": 149,
+        "median": 268,
+        "p75": 436,
+        "p95": 1005,
+        "max": 8380,
+        "mean": 372.2
+      }
+    },
+    "ZKPO": {
+      "short": "ЗКПО",
+      "title": "Закон за корпоративното подоходно облагане",
+      "chunks": 1282,
+      "unique_articles": 352,
+      "repealed_chunks": 40,
+      "empty_chunks": 0,
+      "long_chunks_ge2000": 10,
+      "char_quartiles": {
+        "min": 30,
+        "p25": 162,
+        "median": 290,
+        "p75": 470,
+        "p95": 997,
+        "max": 7272,
+        "mean": 384.0
+      }
+    },
+    "ZS": {
+      "short": "ЗС",
+      "title": "Закон за счетоводството",
+      "chunks": 279,
+      "unique_articles": 87,
+      "repealed_chunks": 2,
+      "empty_chunks": 0,
+      "long_chunks_ge2000": 5,
+      "char_quartiles": {
+        "min": 54,
+        "p25": 159,
+        "median": 238,
+        "p75": 415,
+        "p95": 1139,
+        "max": 3699,
+        "mean": 386.7
+      }
+    },
+    "ZDDFL": {
+      "short": "ЗДДФЛ",
+      "title": "Закон за данъците върху доходите на физическите лица",
+      "chunks": 412,
+      "unique_articles": 102,
+      "repealed_chunks": 9,
+      "empty_chunks": 0,
+      "long_chunks_ge2000": 8,
+      "char_quartiles": {
+        "min": 37,
+        "p25": 150,
+        "median": 245,
+        "p75": 400,
+        "p95": 907,
+        "max": 7443,
+        "mean": 370.2
+      }
+    },
+    "ZDDS": {
+      "short": "ЗДДС",
+      "title": "Закон за данък върху добавената стойност",
+      "chunks": 1455,
+      "unique_articles": 293,
+      "repealed_chunks": 27,
+      "empty_chunks": 4,
+      "long_chunks_ge2000": 21,
+      "char_quartiles": {
+        "min": 29,
+        "p25": 156,
+        "median": 284,
+        "p75": 477,
+        "p95": 1074,
+        "max": 5910,
+        "mean": 401.7
+      }
+    }
+  },
+  "article_number_gaps": {},
+  "examples": {
+    "empty_chunks_first_5": [
+      {
+        "id": "KSO_117а",
+        "law": "КСО",
+        "text": "(Нов - ДВ, бр. 45 от 2002 г.)"
+      },
+      {
+        "id": "KSO_118а",
+        "law": "КСО",
+        "text": "(Нов - ДВ, бр. 45 от 2002 г.)"
+      },
+      {
+        "id": "KSO_120б",
+        "law": "КСО",
+        "text": "(Нов - ДВ, бр. 67 от 2003 г.)"
+      },
+      {
+        "id": "KSO_120в",
+        "law": "КСО",
+        "text": "(Нов - ДВ, бр. 92 от 2017 г.)"
+      },
+      {
+        "id": "KSO_121а",
+        "law": "КСО",
+        "text": "(Нов - ДВ, бр. 67 от 2003 г.)"
+      }
+    ],
+    "duplicate_groups_first_5": [
+      {
+        "ids": [
+          "KSO_4а",
+          "ZDDFL_80а"
+        ],
+        "preview": "(Нов - ДВ, бр. 99 от 2009 г., в сила от 01.01.2010 г.)"
+      },
+      {
+        "ids": [
+          "KSO_4а",
+          "ZKPO_260я"
+        ],
+        "preview": "(Нов - ДВ, бр. 99 от 2009 г., в сила от 01.01.2010 г.)"
+      },
+      {
+        "ids": [
+          "KSO_4в",
+          "KSO_20а",
+          "KSO_22г",
+          "KSO_68а",
+          "KSO_69б",
+          "KSO_69в"
+        ],
+        "preview": "(Нов - ДВ, бр. 61 от 2015 г., в сила от 01.01.2016 г.)"
+      },
+      {
+        "ids": [
+          "KSO_6",
+          "KSO_9",
+          "KSO_29",
+          "KSO_116"
+        ],
+        "preview": "(Изм. - ДВ, бр. 1 от 2002 г., в сила от 01.01.2002 г.)"
+      },
+      {
+        "ids": [
+          "KSO_9_al8",
+          "KSO_9_al9",
+          "KSO_9_al10"
+        ],
+        "preview": "(Отм. - ДВ, бр. 61 от 2015 г., в сила от 01.01.2016 г.)"
+      }
+    ],
+    "repealed_first_5": [
+      {
+        "id": "KSO_14",
+        "law": "КСО",
+        "text": "(Отм. - ДВ, бр. 70 от 2004 г., в сила от 01.01.2005 г.)"
+      },
+      {
+        "id": "KSO_15",
+        "law": "КСО",
+        "text": "(Отм. - ДВ, бр. 70 от 2004 г., в сила от 01.01.2005 г.)"
+      },
+      {
+        "id": "KSO_16",
+        "law": "КСО",
+        "text": "(Отм. - ДВ, бр. 70 от 2004 г., в сила от 01.01.2005 г.)"
+      },
+      {
+        "id": "KSO_17",
+        "law": "КСО",
+        "text": "(Отм. - ДВ, бр. 70 от 2004 г., в сила от 01.01.2005 г.)"
+      },
+      {
+        "id": "KSO_26а",
+        "law": "КСО",
+        "text": "(Нов - ДВ, бр. 1 от 2002 г., в сила от 01.01.2002 г.) Приходите за фонд \"Безработица\" се набират от: 1. осигурителни вно"
+      }
+    ]
+  }
+}

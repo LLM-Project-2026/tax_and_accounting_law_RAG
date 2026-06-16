@@ -1,0 +1,52 @@
+{
+  "KSO": {
+    "short": "КСО",
+    "title": "Кодекс за социално осигуряване",
+    "url": "https://lex.bg/laws/ldoc/1597824512",
+    "fetched_at": "2026-06-14T17:46:33",
+    "file": "KSO__20260614.html",
+    "sha256": "889dfc4e93ad08b5f85c57e715a11179f2253300350939a3fbe26b748013b2c7",
+    "bytes": 5372783,
+    "source": "adopted-from-data-raw"
+  },
+  "ZKPO": {
+    "short": "ЗКПО",
+    "title": "Закон за корпоративното подоходно облагане",
+    "url": "https://lex.bg/laws/ldoc/2135540562",
+    "fetched_at": "2026-06-14T17:46:33",
+    "file": "ZKPO__20260614.html",
+    "sha256": "1cb9524f99b7f5cf3031f654b1cb58039f11b6a09cfcae9ccd04890382036007",
+    "bytes": 3590650,
+    "source": "adopted-from-data-raw"
+  },
+  "ZS": {
+    "short": "ЗС",
+    "title": "Закон за счетоводството",
+    "url": "https://lex.bg/laws/ldoc/2136697598",
+    "fetched_at": "2026-06-14T17:46:33",
+    "file": "ZS__20260614.html",
+    "sha256": "8de521ec202852b089c76295676aacdb4f67f4f15cb4ce34252cfbcce8328b63",
+    "bytes": 943222,
+    "source": "adopted-from-data-raw"
+  },
+  "ZDDFL": {
+    "short": "ЗДДФЛ",
+    "title": "Закон за данъците върху доходите на физическите лица",
+    "url": "https://lex.bg/laws/ldoc/2135538631",
+    "fetched_at": "2026-06-14T17:46:33",
+    "file": "ZDDFL__20260614.html",
+    "sha256": "16a692292b1638b9466e3dd550596470f0b3c1d1088d34e9c79a072cc0a412fb",
+    "bytes": 1322934,
+    "source": "adopted-from-data-raw"
+  },
+  "ZDDS": {
+    "short": "ЗДДС",
+    "title": "Закон за данък върху добавената стойност",
+    "url": "https://lex.bg/laws/ldoc/2135533201",
+    "fetched_at": "2026-06-16T10:37:27",
+    "file": "ZDDS__20260616.html",
+    "sha256": "81f263050f5b2582888951642bf9b4e0884e05a4e1eb8dd0f99d827e5e4f0ef6",
+    "bytes": 2587469,
+    "source": "manual-browser-save"
+  }
+}

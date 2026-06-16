@@ -4,10 +4,6 @@ Stages:
                              and normalize them into data/raw/<CODE>__<DATE>.html
   2. ingest.parse          — produce data/parsed/chunks.jsonl
   3. ingest.quality        — write reports/quality.json (+ console summary)
-  4. analysis.tokenizers   — write reports/tokenizers.json (+ console summary)
-
-Flags:
-  --skip-tokenizers   skip stage 4 (slow — downloads HF model on first run)
 """
 from __future__ import annotations
 
@@ -21,7 +17,6 @@ STAGES = [
     ("ingest.import_local", "Import local HTML → data/raw/"),
     ("ingest.parse",        "Parse → data/parsed/chunks.jsonl"),
     ("ingest.quality",      "Quality report (L6)"),
-    ("analysis.tokenizers", "Tokenizer comparison (L3)"),
 ]
 
 
@@ -32,19 +27,15 @@ def run_stage(module_name: str) -> int:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--skip-tokenizers", action="store_true",
-                    help="Skip the L3 tokenizer comparison stage")
-    args = ap.parse_args()
+    ap.parse_args()
 
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s %(message)s")
 
-    stages = STAGES[:-1] if args.skip_tokenizers else STAGES
-
-    for i, (mod_name, label) in enumerate(stages, 1):
+    for i, (mod_name, label) in enumerate(STAGES, 1):
         print()
         print("=" * 72)
-        print(f"  STAGE {i}/{len(stages)}: {label}")
+        print(f"  STAGE {i}/{len(STAGES)}: {label}")
         print(f"  → {mod_name}")
         print("=" * 72)
         # Some module main()s parse argv themselves; reset it so they pick defaults.
