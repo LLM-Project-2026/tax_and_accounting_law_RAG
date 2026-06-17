@@ -1,3 +1,4 @@
+
 import json
 import faiss
 import os
@@ -23,6 +24,17 @@ def format_context(chunk):
         f"Линк: {chunk['law_url']}\n"
         f"Текст: {chunk['text']}\n"
     )
+
+def retrieve_context(query, top_k=3):
+    query_text = f"query: {query}"
+    query_vector = embed_model.encode([query_text], normalize_embeddings=True).astype('float32')
+    
+
+    _, indices = index.search(query_vector, top_k)
+
+    retrieved_chunks = [metadata[idx] for idx in indices[0] if idx < len(metadata)]
+    context_str = "\n".join([format_context(c) for c in retrieved_chunks])
+    return context_str
 
 def ask_rag(query, top_k=3):
 
@@ -63,3 +75,5 @@ if __name__ == "__main__":
     
     answer = ask_rag(question)
     print(f"\nОтговор:\n{answer}")
+
+sys.modules["retrieve_context"] = retrieve_context; 

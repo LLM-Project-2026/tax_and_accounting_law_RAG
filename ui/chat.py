@@ -2,7 +2,7 @@ import streamlit as st
 
 from prompts.prompts import SYSTEM_PROMPT
 from ui.export import chats_to_csv
-
+from rag.retriever import retrieve_context
 
 def _new_chat():
     """Create a fresh chat and make it the current one."""
@@ -78,6 +78,9 @@ def render(client):
     prompt = st.chat_input("Type a message...")
     if not prompt:
         return
+
+    rag_context = retrieve_context(prompt, top_k=3)
+    prompt = f"Въз основа на следния контекст: {rag_context}\n\n{prompt}"
 
     chat["messages"].append({"role": "user", "content": prompt})
     if chat["title"] == "New chat":
