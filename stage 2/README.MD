@@ -1,46 +1,78 @@
-# stage_2 — Векторизация и RAG (Stage 2)
+# stage_2 — Векторизация, Retrieval и Reranking
 
-Стъпка 3–4 от пайплайна: **векторизация** на нормативните чънкове чрез `multilingual-e5-small` и **генерация на отговори** чрез `gemini-2.5-flash`.
+Стъпки 3–4 от пайплайна: **векторизация** на нормативните чънкове и
+**двустъпков retrieval** (FAISS recall → cross-encoder rerank),
+последван от генерация на отговор с цитати.
 
 ## Технологичен стек
 * **Embeddings:** `intfloat/multilingual-e5-small` (локален, безплатен)
 * **Vector Index:** `FAISS` (IndexFlatIP — Cosine Similarity)
-* **LLM:** `Google Gemini 2.5 Flash` (през Google GenAI SDK)
-* **Environment:** Автоматизирано управление на конфигурацията чрез `.env`
+* **Reranker:** `BAAI/bge-reranker-v2-m3` (multilingual cross-encoder)
+* **LLM:** `Google Gemini 2.5 Flash`
+* **Configuration:** `.env`
 
-## Какво произвежда този слой
-* `legal_index.faiss` — бинарен индекс за семантично търсене.
-* `metadata.json` — пълна метаинформация за съответствие на векторите към оригиналните текстове.
+## Двустъпков retrieval
 
-## Структура на пайплайна
-
-```text
-data/parsed/chunks.jsonl 
-          │
-          ▼
-    prepare.py ── (E5 Embedding) ──▶ legal_index.faiss + metadata.json
-          │
-          ▼
-    retrieve.py ── (Gemini Flash) ──▶ Отговор с цитати, отговарящ на контекста
+```
+въпрос
+   │
+   ▼
+[1] dense_search          FAISS top-50  (RECALL_K)
+   │
+   ▼
+[2] rerank                cross-encoder → top-5  (FINAL_K)
+   │
+   ▼
+контекст за LLM
 ```
 
-## Структура на репото
+| Стъпка | Цел | Какво прави |
+|---|---|---|
+| **Recall** (top-50) | Не изпускай релевантен чънк | Семантично търсене с по-голяма дълбочина |
+| **Rerank** (top-5) | Сложи най-релевантните най-горе | Cross-encoder оценява двойката (въпрос, чънк) с по-висока точност |
+
+Параметрите `RECALL_K=50` и `FINAL_K=5` в `retrieve.py` се настройват.
+
+## Файлове
 
 ```text
-RAG_Legal/stage_2/
-├── requirements.txt      ← Зависимости (faiss, sentence-transformers, google-genai, python-dotenv)
-├── prepare.py            ← Индексира чънковете в FAISS
-├── retrieve.py           ← Логика за RAG (Embedding query -> Search -> LLM Gen)
-├── legal_index.faiss     ← (генериран) Векторен индекс
-└── metadata.json         ← (генериран) База с метаданни
+stage 2/
+├── prepare.py        — chunks.jsonl → FAISS индекс
+├── retrieve.py       — dense_search → rerank → LLM (Gemini)
+├── rerank.py         — cross-encoder wrapper
+├── evaluate.py       — Recall@K, MRR, Hit Rate, nDCG
+├── golden_set.json   — 15 ръчно изградени въпроса с очаквани членове
+├── evaluation.json   — генериран отчет
+├── legal_index.faiss
+└── metadata.json
 ```
+
+## Метрики за retrieval
+
+Скриптът `evaluate.py` сравнява два режима:
+
+| Режим | Какво прави |
+|---|---|
+| `dense_only` | само FAISS top-K |
+| `dense_plus_rerank` | FAISS top-N → cross-encoder → top-K |
+
+Изчислени метрики (на въпрос, после осреднени):
+
+| Метрика | Какво измерва |
+|---|---|
+| **Hit Rate @K** | Има ли поне един очакван член в top-K? |
+| **Recall @K**   | Каква част от очакваните членове са в top-K? |
+| **MRR**         | Колко високо е първият релевантен резултат? (1/ранг) |
+| **nDCG @K**     | Качество на ранкирането с тегло към горните позиции |
+
+Един чънк се брои за **релевантен**, ако неговата двойка
+`(law_short, article)` присъства в `expected` за съответния въпрос.
 
 ## Как се пуска
 
-1. **Конфигурация:**
-   Създай `.env` файл в текущата папката:
+1. **Конфигурация:** създай `.env`:
    ```text
-   GEMINI_API_KEY=ваш_google_апи_ключ
+   GEMINI_API_KEY=твоят_ключ
    ```
 
 2. **Зависимости:**
@@ -48,24 +80,34 @@ RAG_Legal/stage_2/
    pip install -r requirements.txt
    ```
 
-3. **Изпълнение:**
+3. **Стъпки:**
    ```bash
-   # Генериране на първоначални embeddings (само веднъж при промяна на данните)
+   # (a) Индексиране — само веднъж при промяна на корпуса
    python prepare.py
 
-   # Тестване на "въпрос -> отговор", ще се използва за stage_3
+   # (b) Кратък тест „въпрос → отговор"
    python retrieve.py
+
+   # (c) Пълно оценяване — сравнява dense vs dense+rerank
+   python evaluate.py
+
+   # (d) С персонализирани параметри
+   python evaluate.py --recall-k 30 --final-k 3
    ```
 
-## Интерфейс за търсене
-Системата използва `multilingual-e5-small`, като автоматично добавя нужните префикси:
-- За индексиране: `passage: `
-- За търсене: `query: `
+## Какво показва `evaluation.json`
 
-Това е нужно за коректната работа на `multilingual-e5-small`. Модела е настроен с `temperature=0.1` за по-голяма точност и следване на контекста.
+```jsonc
+{
+  "config": { "recall_k": 50, "final_k": 5, "queries": 15 },
+  "dense_only":        { "hit": 0.X, "recall": 0.X, "mrr": 0.X, "ndcg": 0.X },
+  "dense_plus_rerank": { "hit": 0.X, "recall": 0.X, "mrr": 0.X, "ndcg": 0.X },
+  "timing": { "per_query_dense_ms": ..., "per_query_rerank_ms": ... },
+  "per_query": [ ... ]   // подробна разбивка
+}
+```
 
-## Бъдещи стъпки (Потенциални подобрения)
-
-- **Хибридно търсене (Hybrid Search):** Комбиниране на текущото векторно търсене (FAISS/семантика) с ключови думи (напр. BM25). Това ще помогне при търсене на много специфични термини или точни номера на членове, които ембединг моделите понякога пропускат.
-- **Пренареждане (Reranking):** Добавяне на Cross-Encoder модел (напр. `bge-reranker-m3`), който да преоценява извлечените от FAISS топ 10-15 резултата и да подава само най-релевантните 3 на Gemini.
-- **Разширени RAG техники:** Внедряване на *Query Expansion* (разширяване на потребителския въпрос чрез LLM преди търсенето) за по-добро справяне със сложни юридически казуси, засягащи множество закони едновременно.
+Очаквана динамика: rerank-ът обикновено повишава **MRR** и **nDCG**
+с цената на ~100–300 ms добавена латентност на въпрос. `Recall@K`
+расте, само ако rerank-ът „спасява" чънк, който е в top-N но извън
+top-K при dense-only.
